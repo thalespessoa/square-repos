@@ -1,4 +1,4 @@
-package com.square.repos.viewmodels
+package com.square.repos.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
@@ -17,27 +17,50 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
     @Inject
     lateinit var dataRepository: DataRepository
 
-    data class ListViewState(val loading: Boolean = false, val listRepo: List<Repo> = emptyList(), val error: Throwable? = null) {
+    data class ListViewState(val loading: Boolean = false,
+                             val repos: List<Repo> = emptyList(),
+                             val error: Throwable? = null) {
+        val loadingVisibility = if (loading) View.VISIBLE else View.INVISIBLE
+        val listRepoVisibility = View.VISIBLE
+        val listErrorVisibility = if (!loading && error != null) View.VISIBLE else View.INVISIBLE
+    }
+
+    data class DetailViewState(val loading: Boolean = false,
+                               val repo: Repo? = null,
+                               val users: List<User> = emptyList(),
+                               val error: Throwable? = null) {
         val loadingVisibility = if (loading) View.VISIBLE else View.INVISIBLE
         val listRepoVisibility = if (!loading && error == null) View.VISIBLE else View.INVISIBLE
         val listErrorVisibility = if (!loading && error != null) View.VISIBLE else View.INVISIBLE
     }
 
     val listState = MutableLiveData<ListViewState>()
+    val detailState = MutableLiveData<DetailViewState>()
 
     private val disposables: CompositeDisposable = CompositeDisposable()
 
     @Override
     override fun inject(applicationComponent: ApplicationComponent) {
         applicationComponent.inject(this)
-        if(listState.value == null) {
+        if (listState.value == null) {
             fetchListRepos()
+        }
+        if (detailState.value == null) {
+            detailState.value = DetailViewState(false)
         }
     }
 
     override fun onCleared() {
         super.onCleared()
         disposables.clear()
+    }
+
+    fun saveRepo() {
+        detailState.value?.let {detailState->
+            detailState.repo?.let {repo->
+                dataRepository.saveRepo(repo, detailState.users)
+            }
+        }
     }
 
     private fun fetchListRepos() {
@@ -53,7 +76,7 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
                     ListViewState(false, repos)
                 }
                 .onErrorReturn {
-                    ListViewState(false, error = it)
+                    ListViewState(false, repos, it)
                 }
                 .subscribe {
                     listState.value = it
@@ -61,6 +84,21 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
     }
 
     fun selectRepo(repo: Repo) {
-        print("Select repos: ${repo}")
+        repo.name?.let { repoName ->
+            detailState.value = DetailViewState(false, repo)
+            dataRepository.fetchSavedUsers(repo.id)
+                    .mergeWith(dataRepository.fetchUsers(repoName))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map {
+                        DetailViewState(false, repo, it, null)
+                    }
+                    .onErrorReturn {
+                        DetailViewState(false, error = it)
+                    }
+                    .subscribe {
+                        detailState.value = it
+                    }
+        }
     }
 }

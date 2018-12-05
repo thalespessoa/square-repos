@@ -1,25 +1,31 @@
-package com.square.repos
+package com.square.repos.view
 
 import android.arch.lifecycle.ViewModelProviders
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.square.repos.R
+import com.square.repos.RepoListBinding
 import com.square.repos.app.ViewModelFactory
 import com.square.repos.model.Repo
-import com.square.repos.viewmodels.ReposViewModel
+import com.square.repos.viewmodel.ReposViewModel
 import kotlinx.android.synthetic.main.fragment_list_repo.*
 
 class RepoListFragment : Fragment(), ReposAdapter.OnSelectRepo {
 
-    private val reposAdapter:ReposAdapter by lazy { ReposAdapter(this) }
-    private val reposViewModel:ReposViewModel? by lazy { activity?.let {
-        ViewModelProviders.of(it, ViewModelFactory())
-                .get(ReposViewModel::class.java)
-    } }
+    private val recyclerView: RecyclerView by lazy { recycler_view }
+    private val reposAdapter: ReposAdapter by lazy { ReposAdapter(this) }
+    private val reposViewModel: ReposViewModel? by lazy {
+        activity?.let {
+            ViewModelProviders.of(it, ViewModelFactory())
+                    .get(ReposViewModel::class.java)
+        }
+    }
 
     //----------------------------------------------------------------------------------------------
     // Lifecycle

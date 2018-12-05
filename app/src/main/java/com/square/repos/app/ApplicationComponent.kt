@@ -1,6 +1,6 @@
 package com.square.repos.app
 
-import com.square.repos.viewmodels.ReposViewModel
+import com.square.repos.viewmodel.ReposViewModel
 import dagger.Component
 import javax.inject.Singleton
 

@@ -6,30 +6,36 @@
     <data class=".RepoListBinding">
         <variable
             name="viewModel"
-            type="com.square.repos.viewmodels.ReposViewModel" />
+            type="com.square.repos.viewmodel.ReposViewModel" />
     </data>
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="@{viewModel.listState.listRepoVisibility}"
-            app:data="@{viewModel.listState.listRepo}"
+            app:data="@{viewModel.listState.repos}"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="@{viewModel.listState.loadingVisibility}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_centerInParent="true"/>
 
-    </android.support.constraint.ConstraintLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="50dp"
+            android:visibility="@{viewModel.listState.listErrorVisibility}"
+            android:text="@{viewModel.listState.error.message}"
+            tools:text="Alert message"/>
+
+    </RelativeLayout>
 </layout>

@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Square repos</string>
+    <string name="title_detail">Details</string>
+    <string name="save_repo">Save</string>
 </resources>
