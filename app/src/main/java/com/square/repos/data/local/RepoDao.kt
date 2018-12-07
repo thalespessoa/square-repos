@@ -9,8 +9,11 @@ import io.reactivex.Flowable
 @Dao
 interface RepoDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(repo: Repo)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertList(repos: List<Repo>)
 
     @Delete
     fun delete(repo: Repo)
