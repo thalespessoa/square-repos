@@ -6,9 +6,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.square.repos.R
 import com.square.repos.app.ViewModelFactory
+import com.square.repos.viewmodel.DetailRepoState
 import com.square.repos.viewmodel.ReposViewModel
 
-class ReposActivity : AppCompatActivity(), Observer<ReposViewModel.DetailViewState> {
+class ReposActivity : AppCompatActivity(), Observer<DetailRepoState> {
 
     companion object {
         private const val TAG_DETAIL = "detail"
@@ -25,7 +26,7 @@ class ReposActivity : AppCompatActivity(), Observer<ReposViewModel.DetailViewSta
 //        reposViewModel.detailState.observe(this, this)
     }
 
-    override fun onChanged(viewState: ReposViewModel.DetailViewState?) {
+    override fun onChanged(viewState: DetailRepoState?) {
         supportFragmentManager
                 .beginTransaction()
                 .add(R.id.fragment_list, RepoDetailFragment(), TAG_DETAIL)

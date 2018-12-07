@@ -40,6 +40,8 @@ class ReposAdapter(private val onSelectRepo: OnSelectRepo) : RecyclerView.Adapte
 
         fun bind(repo: Repo) {
             itemView.title.text = repo.name
+                itemView.title.setTextColor(
+                        itemView.context.resources.getColor( if (repo.isSaved) R.color.colorAccent else R.color.colorBaseDark))
             itemView.setOnClickListener {
                 onSelectRepo.onSelectRepo(repo)
             }

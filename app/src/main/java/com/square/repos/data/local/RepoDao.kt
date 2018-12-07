@@ -2,7 +2,6 @@ package com.square.repos.data.local
 
 import android.arch.persistence.room.*
 import com.square.repos.model.Repo
-import com.square.repos.model.User
 import io.reactivex.Flowable
 
 
@@ -20,4 +19,7 @@ interface RepoDao {
 
     @Query("SELECT * FROM repo WHERE id > :id LIMIT 1")
     fun select(id:String): Flowable<Repo>
+
+    @Update()
+    fun update(repos: List<Repo>)
 }

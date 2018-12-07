@@ -5,39 +5,47 @@ import com.square.repos.data.remote.NetworkApi
 import com.square.repos.model.Repo
 import com.square.repos.model.RepoUserJoin
 import com.square.repos.model.User
+import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.Executors
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers.io
 
 
 class DataRepository(private val networkApi: NetworkApi, private val localDatabase: LocalDatabase) {
 
-    private val diskIO = Executors.newSingleThreadExecutor()
-
-
     fun fetchUsers(repoName: String): Flowable<List<User>> = networkApi.fetchStargazers(repoName)
     fun fetchAllRepos(): Flowable<List<Repo>> = networkApi.fetchList()
+            .subscribeOn(io())
+            .observeOn(mainThread())
 
-    fun fetchSavedRepos(): Flowable<List<Repo>> = localDatabase.repoDao().loadAll()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+    fun fetchSavedRepos(): Flowable<List<Repo>> =
+            localDatabase.repoDao().loadAll()
+                    .subscribeOn(io())
+                    .observeOn(mainThread())
 
-    fun fetchSavedUsers(repoId: Int): Flowable<List<User>> = localDatabase.repoUserJoinDao().selectUsersRepo(repoId)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
 
-    fun saveRepo(repo: Repo, users: List<User>) {
-        diskIO.execute {
-            localDatabase.repoDao().insert(repo)
+    fun fetchRepos(): Flowable<List<Repo>> =
+            localDatabase.repoDao().loadAll()
+                    .subscribeOn(io())
+                    .observeOn(mainThread())
+
+    fun fetchSavedUsers(repoId: Int): Flowable<List<User>> =
+            localDatabase.repoUserJoinDao().selectUsersRepo(repoId)
+                    .subscribeOn(io())
+                    .observeOn(mainThread())
+
+
+    fun saveRepo(repo: Repo, users: List<User>): Completable = Completable.fromAction {
+        localDatabase.runInTransaction {
+            localDatabase.repoDao().insert(repo.apply { isSaved = true })
             localDatabase.userDao().insertList(users)
-            val repoUserJoinList = arrayListOf<RepoUserJoin>()
-            users.forEach {
-                repoUserJoinList.add(RepoUserJoin(it.id, repo.id))
-            }
-            localDatabase.repoUserJoinDao().insert(repoUserJoinList)
+            localDatabase.repoUserJoinDao().insert(users.map {
+                RepoUserJoin(it.id, repo.id)
+            })
         }
     }
+            .observeOn(mainThread())
+            .subscribeOn(io())
 
     // Test
 
