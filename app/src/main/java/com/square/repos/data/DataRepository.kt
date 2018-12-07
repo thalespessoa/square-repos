@@ -1,5 +1,6 @@
 package com.square.repos.data
 
+import android.annotation.SuppressLint
 import com.square.repos.data.local.LocalDatabase
 import com.square.repos.data.remote.NetworkApi
 import com.square.repos.model.Repo
@@ -46,6 +47,18 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
     }
             .observeOn(mainThread())
             .subscribeOn(io())
+
+    @SuppressLint("CheckResult")
+    fun fetchRepos(): Flowable<List<Repo>> {
+        networkApi.fetchList()
+                .subscribeOn(Schedulers.io())
+                .subscribe {
+                    localDatabase.repoDao().insertList(it)
+                }
+        return localDatabase.repoDao().loadAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
 
     // Test
 

@@ -18,17 +18,19 @@
 
         <TextView
             android:id="@+id/tv_title"
+            style="@style/TextHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{viewModel.detailState.repo.name}"
             tools:text="Title" />
 
-        <Button
+        <ImageButton
             android:id="@+id/bt_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/save_repo"
             android:layout_alignParentRight="true"
+            android:background="@drawable/base_square_selector"
+            android:src="@drawable/baseline_star_24px"
             tools:text="Title" />
 
         <android.support.v7.widget.RecyclerView
