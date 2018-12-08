@@ -40,11 +40,12 @@ class ReposAdapter(private val onSelectRepo: OnSelectRepo) : RecyclerView.Adapte
 
         fun bind(repo: Repo) {
             itemView.title.text = repo.name
-            itemView.fav.setImageDrawable(
-                    itemView.context.resources.getDrawable(if (repo.isSaved)
+            itemView.stargazers.text = repo.stargazers_count
+            itemView.title.setCompoundDrawablesWithIntrinsicBounds(
+                    if (repo.isSaved)
                         R.drawable.baseline_favorite_24px
                     else
-                        R.drawable.baseline_favorite_border_24px))
+                        R.drawable.baseline_favorite_border_24px, 0, 0, 0)
             itemView.setOnClickListener {
                 onSelectRepo.onSelectRepo(repo)
             }

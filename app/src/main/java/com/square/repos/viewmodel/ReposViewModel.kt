@@ -6,9 +6,7 @@ import com.square.repos.app.ApplicationComponent
 import com.square.repos.data.DataRepository
 import com.square.repos.model.Repo
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import org.reactivestreams.Subscriber
 import javax.inject.Inject
 
 class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
@@ -16,30 +14,34 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
     @Inject
     lateinit var dataRepository: DataRepository
 
-    val listState = MutableLiveData<ListRepoState>().apply { value = ListRepoState(false) }
-    val detailState = MutableLiveData<DetailRepoState>().apply { value = DetailRepoState(false) }
+    val listState by lazy { MutableLiveData<ListRepoState>().apply { value = ListRepoState(false) } }
+    val detailState by lazy { MutableLiveData<DetailRepoState>().apply { value = DetailRepoState(false) } }
 
-    private var selectedRepoSubscription:Disposable? = null
-    private var listRepoSubscription:Disposable? = null
+    private var selectedRepoSubscription: Disposable? = null
+    private var listRepoSubscription: Disposable? = null
 
     @Override
     override fun inject(applicationComponent: ApplicationComponent) {
         applicationComponent.inject(this)
+        listRepos()
+    }
+
+    fun listRepos() {
+        listState.value = ListRepoState(true)
         listRepoSubscription = dataRepository.fetchRepos()
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map {
                     ListRepoState(false, it)
                 }
                 .onErrorReturn { error ->
-                    listState.value?.let {
-                        ListRepoState(false, it.repos, error)
-                    } ?: ListRepoState(false, error = error)
-
+                    ListRepoState(false, listState.value?.repos ?: listOf(), error)
                 }
-                .subscribe {
+                .subscribe ({
                     listState.value = it
-                }
+                }, { error ->
+                    print("subscribe error: ${error}")
+                    ListRepoState(false, listState.value?.repos ?: listOf(), error)
+                })
     }
 
     fun saveRepo() {
@@ -55,30 +57,33 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
                             println("Save repo")
                         }) {
                             it.printStackTrace()
-                            println("Error Save repo: ${it}")
+                            println("Error Save repo: $it")
                             // error
                         }
             }
         }
     }
 
-    fun selectRepo(repo: Repo) {
-        detailState.value = DetailRepoState(false, repo)
+    fun selectRepo(repoSelected: Repo) {
+        detailState.value = DetailRepoState(true, repoSelected)
         selectedRepoSubscription?.dispose()
-        selectedRepoSubscription = dataRepository.fetchRepoDetails(repo)
-                .subscribeOn(AndroidSchedulers.mainThread())
+        selectedRepoSubscription = dataRepository.fetchRepoDetails(repoSelected)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { repo ->
                     DetailRepoState(false, repo)
                 }
-                .onErrorReturn {error ->
+                .onErrorReturn { error ->
                     detailState.value?.let {
                         DetailRepoState(false, it.repo, error)
                     } ?: DetailRepoState(false, error = error)
                 }
-                .subscribe {
+                .subscribe ({
                     detailState.value = it
-                }
+                }, { error ->
+                    listState.value?.let {
+                        ListRepoState(false, it.repos, error)
+                    } ?: ListRepoState(false, error = error)
+                })
     }
 
     override fun onCleared() {
