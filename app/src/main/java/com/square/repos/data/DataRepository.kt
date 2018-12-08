@@ -18,34 +18,28 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
                     .map { users ->
                         users.map { it.repoId = repo.id }
                         localDatabase.userDao().insertList(users)
-                        System.out.println("DataRepository fetchRepoDetails 1 " + users)
                         repo
                     }
                     .mergeWith(Flowables.combineLatest(
                             localDatabase.repoDao().select(repo.id),
                             localDatabase.userDao().selectUsersRepo(repo.id))
 
-                    { repo, users ->
-
-                        repo.isSaved = localDatabase.favoriteDao().getFavorite(repoId = repo.id) != null
-                        System.out.println("DataRepository fetchRepoDetails 2 $repo : $users")
-                        repo.users = users
-                        repo
+                    { localRepo, users ->
+                        localRepo.isSaved = localDatabase.favoriteDao().getFavorite(repoId = localRepo.id) != null
+                        localRepo.users = users
+                        localRepo
                     })
-
 
     fun fetchRepos(): Flowable<List<Repo>> =
             networkApi.fetchList().subscribeOn(io())
                     .observeOn(io())
                     .doOnNext { repos ->
-                        System.out.println("DataRepository fetchRepos 1 " + repos)
                         repos?.let {
                             localDatabase.repoDao().insertList(repos)
                         }
                     }
                     .mergeWith(localDatabase.repoDao().loadAll())
                     .doOnNext { repos ->
-                        System.out.println("DataRepository fetchRepos 2 " + repos)
                         localDatabase.favoriteDao().getFavorites().map { repoId ->
                             repos.find { it.id == repoId }?.isSaved = true
                         }

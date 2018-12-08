@@ -15,7 +15,7 @@ data class DetailRepoState(val loading: Boolean = false,
     val users = repo?.users ?: listOf()
 
     val favImage = if (repo?.isSaved == true)
-        R.drawable.baseline_star_24px
+        R.drawable.baseline_favorite_24px
     else
-        R.drawable.baseline_star_border_24px
+        R.drawable.baseline_favorite_border_24px
 }

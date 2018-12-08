@@ -15,6 +15,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:background="@color/colorBaseLight"
+        android:clipToPadding="false"
         android:padding="20dp">
 
         <TextView
@@ -30,17 +31,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_marginRight="-10dp"
+            android:layout_marginTop="-10dp"
             android:background="@drawable/base_square_selector"
+            android:padding="10dp"
             app:imageResource="@{viewModel.detailState.favImage}"
+            tools:src="@drawable/baseline_favorite_border_24px"
             tools:text="Title" />
 
-        <include
+        <TextView
             android:id="@+id/warning"
-            layout="@layout/view_warning"
+            style="@style/TextWarning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
             android:layout_marginTop="20dp"
+            android:text="@{viewModel.detailState.error.message}"
             android:visibility="@{viewModel.detailState.listErrorVisibility}" />
 
         <android.support.v7.widget.RecyclerView

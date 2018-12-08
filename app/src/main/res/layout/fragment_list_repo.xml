@@ -16,12 +16,13 @@
         android:animateLayoutChanges="true"
         android:background="@color/colorBaseLight">
 
-        <include
+        <TextView
             android:id="@+id/warning"
-            layout="@layout/view_warning"
+            style="@style/TextWarning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
+            android:text="@{viewModel.listState.error.message}"
             android:visibility="@{viewModel.listState.listErrorVisibility}" />
 
         <android.support.v7.widget.RecyclerView

@@ -36,7 +36,6 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.Holder>(), BindableAdapte
     //----------------------------------------------------------------------------------------------
 
     class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         fun bind(user: User) {
             itemView.title.text = user.login
             Picasso.with(itemView.context).load(user.avatar_url).into(itemView.image)

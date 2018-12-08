@@ -8,15 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-
-    <style name="Text" parent="@android:style/TextAppearance">
-        <item name="android:maxLines">1</item>
-        <item name="android:ellipsize">end</item>
-    </style>
-
-
-    <style name="TextLight" parent="Text">
+    <style name="TextWarning" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorBaseLight</item>
+        <item name="android:background">@color/colorWarning</item>
+        <item name="android:drawableLeft">@drawable/baseline_refresh_24px</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:drawablePadding">10dp</item>
     </style>
 
     <style name="TextHeader" parent="@android:style/TextAppearance">
@@ -25,7 +22,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ListText" parent="Text">
+    <style name="ListText" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorBaseDark</item>
         <item name="android:textSize">10sp</item>
         <item name="android:maxLines">1</item>

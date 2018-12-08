@@ -42,9 +42,9 @@ class ReposAdapter(private val onSelectRepo: OnSelectRepo) : RecyclerView.Adapte
             itemView.title.text = repo.name
             itemView.fav.setImageDrawable(
                     itemView.context.resources.getDrawable(if (repo.isSaved)
-                        R.drawable.baseline_star_24px
+                        R.drawable.baseline_favorite_24px
                     else
-                        R.drawable.baseline_star_border_24px))
+                        R.drawable.baseline_favorite_border_24px))
             itemView.setOnClickListener {
                 onSelectRepo.onSelectRepo(repo)
             }

@@ -25,6 +25,6 @@
         android:layout_centerVertical="true"
         android:scaleType="centerInside"
         android:background="@android:color/transparent"
-        android:src="@drawable/baseline_star_border_24px" />
+        android:src="@drawable/baseline_favorite_border_24px" />
 
 </RelativeLayout>
