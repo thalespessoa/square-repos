@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.square.repos.R
 import com.square.repos.model.Repo
-import kotlinx.android.synthetic.main.list_item.view.*
+import kotlinx.android.synthetic.main.item_repo.view.*
 
 class ReposAdapter(private val onSelectRepo: OnSelectRepo) : RecyclerView.Adapter<ReposAdapter.Holder>(), BindableAdapter<Repo> {
 
@@ -19,7 +19,7 @@ class ReposAdapter(private val onSelectRepo: OnSelectRepo) : RecyclerView.Adapte
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val inflater = LayoutInflater.from(parent.context)
-        return Holder(inflater.inflate(R.layout.list_item, parent, false), onSelectRepo)
+        return Holder(inflater.inflate(R.layout.item_repo, parent, false), onSelectRepo)
     }
 
     override fun getItemCount() = items.size
@@ -40,8 +40,11 @@ class ReposAdapter(private val onSelectRepo: OnSelectRepo) : RecyclerView.Adapte
 
         fun bind(repo: Repo) {
             itemView.title.text = repo.name
-                itemView.title.setTextColor(
-                        itemView.context.resources.getColor( if (repo.isSaved) R.color.colorAccent else R.color.colorBaseDark))
+            itemView.fav.setImageDrawable(
+                    itemView.context.resources.getDrawable(if (repo.isSaved)
+                        R.drawable.baseline_star_24px
+                    else
+                        R.drawable.baseline_star_border_24px))
             itemView.setOnClickListener {
                 onSelectRepo.onSelectRepo(repo)
             }

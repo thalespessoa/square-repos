@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        android:background="@color/colorBaseLight">
+        android:background="@color/colorBaseLight"
+        android:padding="20dp">
 
         <TextView
             android:id="@+id/tv_title"
@@ -30,14 +31,23 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:background="@drawable/base_square_selector"
-            android:src="@drawable/baseline_star_24px"
+            app:imageResource="@{viewModel.detailState.favImage}"
             tools:text="Title" />
+
+        <include
+            android:id="@+id/warning"
+            layout="@layout/view_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginTop="20dp"
+            android:visibility="@{viewModel.detailState.listErrorVisibility}" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/tv_title"
+            android:layout_below="@id/warning"
             android:layout_marginTop="20dp"
             app:data="@{viewModel.detailState.users}"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager" />

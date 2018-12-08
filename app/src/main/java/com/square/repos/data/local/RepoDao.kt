@@ -17,11 +17,11 @@ interface RepoDao {
     @Delete
     fun delete(repo: Repo)
 
-    @Query("SELECT * FROM repo")
+    @Query("SELECT * FROM repo_entity")
     fun loadAll(): Flowable<List<Repo>>
 
-    @Query("SELECT * FROM repo WHERE id > :id LIMIT 1")
-    fun select(id:String): Flowable<Repo>
+    @Query("SELECT * FROM repo_entity WHERE id = :id LIMIT 1")
+    fun select(id:Int): Flowable<Repo>
 
     @Update()
     fun update(repos: List<Repo>)

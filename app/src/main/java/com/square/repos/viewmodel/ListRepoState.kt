@@ -9,5 +9,5 @@ class ListRepoState(private val loading: Boolean = false,
                     val message: String? = null) {
     val loadingVisibility = if (loading) View.VISIBLE else View.INVISIBLE
     val listRepoVisibility = View.VISIBLE
-    val listErrorVisibility = if (!loading && error != null) View.VISIBLE else View.INVISIBLE
+    val listErrorVisibility = if (!loading && error != null) View.VISIBLE else View.GONE
 }

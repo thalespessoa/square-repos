@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data class=".RepoListBinding">
+
         <variable
             name="viewModel"
             type="com.square.repos.viewmodel.ReposViewModel" />
@@ -12,12 +13,22 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        android:background="@color/colorBaseLight">
+
+        <include
+            android:id="@+id/warning"
+            layout="@layout/view_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:visibility="@{viewModel.listState.listErrorVisibility}" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/warning"
             android:visibility="@{viewModel.listState.listRepoVisibility}"
             app:data="@{viewModel.listState.repos}"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
@@ -25,17 +36,17 @@
         <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="@{viewModel.listState.loadingVisibility}"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:visibility="@{viewModel.listState.loadingVisibility}" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_margin="50dp"
-            android:visibility="@{viewModel.listState.listErrorVisibility}"
             android:text="@{viewModel.listState.error.message}"
-            tools:text="Alert message"/>
+            android:visibility="@{viewModel.listState.listErrorVisibility}"
+            tools:text="Alert message" />
 
     </RelativeLayout>
 </layout>

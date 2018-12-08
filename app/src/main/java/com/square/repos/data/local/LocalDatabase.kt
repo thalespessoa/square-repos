@@ -2,8 +2,8 @@ package com.square.repos.data.local
 
 import android.arch.persistence.room.Database
 import android.arch.persistence.room.RoomDatabase
+import com.square.repos.model.Favorite
 import com.square.repos.model.Repo
-import com.square.repos.model.RepoUserJoin
 import com.square.repos.model.User
 
 /**
@@ -11,11 +11,11 @@ import com.square.repos.model.User
  */
 
 
-@Database(entities = [Repo::class, User::class, RepoUserJoin::class],
+@Database(entities = [Repo::class, User::class, Favorite::class],
         version = 1,
         exportSchema = false)
 abstract class LocalDatabase : RoomDatabase() {
     abstract fun repoDao(): RepoDao
+    abstract fun favoriteDao(): FavoriteDao
     abstract fun userDao(): UserDao
-    abstract fun repoUserJoinDao(): RepoUserJoinDao
 }

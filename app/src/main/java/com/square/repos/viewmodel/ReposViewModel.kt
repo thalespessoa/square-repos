@@ -5,14 +5,10 @@ import android.arch.lifecycle.ViewModel
 import com.square.repos.app.ApplicationComponent
 import com.square.repos.data.DataRepository
 import com.square.repos.model.Repo
-import io.reactivex.Flowable
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.Flowables
-import io.reactivex.rxkotlin.Observables
-import io.reactivex.schedulers.Schedulers
-import java.util.function.BiFunction
+import io.reactivex.disposables.Disposable
+import org.reactivestreams.Subscriber
 import javax.inject.Inject
 
 class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
@@ -21,28 +17,39 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
     lateinit var dataRepository: DataRepository
 
     val listState = MutableLiveData<ListRepoState>().apply { value = ListRepoState(false) }
-    val detailState = MutableLiveData<DetailRepoState>()
+    val detailState = MutableLiveData<DetailRepoState>().apply { value = DetailRepoState(false) }
 
-    private val disposables: CompositeDisposable = CompositeDisposable()
+    private var selectedRepoSubscription:Disposable? = null
+    private var listRepoSubscription:Disposable? = null
 
     @Override
     override fun inject(applicationComponent: ApplicationComponent) {
         applicationComponent.inject(this)
-        fetchListRepos()
-        if (detailState.value == null) {
-            detailState.value = DetailRepoState(false)
-        }
-    }
+        listRepoSubscription = dataRepository.fetchRepos()
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map {
+                    ListRepoState(false, it)
+                }
+                .onErrorReturn { error ->
+                    listState.value?.let {
+                        ListRepoState(false, it.repos, error)
+                    } ?: ListRepoState(false, error = error)
 
-    override fun onCleared() {
-        super.onCleared()
-        disposables.clear()
+                }
+                .subscribe {
+                    listState.value = it
+                }
     }
 
     fun saveRepo() {
         detailState.value?.let { detailState ->
             detailState.repo?.let { repo ->
-                dataRepository.saveRepo(repo, detailState.users)
+                if (repo.isSaved) {
+                    dataRepository.removeRepo(repo)
+                } else {
+                    dataRepository.saveRepo(repo)
+                }
                         .subscribe({
                             // success
                             println("Save repo")
@@ -55,45 +62,28 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
         }
     }
 
-    private fun fetchListRepos() {
-        Flowables.combineLatest(
-                dataRepository.fetchSavedRepos().startWith(listOf<Repo>()),
-                dataRepository.fetchAllRepos().startWith(listOf<Repo>()),
-                { localRepos, remoteRepos ->
-                    val combined = localRepos.plus(remoteRepos.minus(localRepos))
-                    ListRepoState(false, combined)
-                })
+    fun selectRepo(repo: Repo) {
+        detailState.value = DetailRepoState(false, repo)
+        selectedRepoSubscription?.dispose()
+        selectedRepoSubscription = dataRepository.fetchRepoDetails(repo)
+                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .onErrorReturn { error ->
-                    listState.value?.let {
-                        ListRepoState(false, it.repos, error)
-                    } ?: ListRepoState(false, error = error)
-
+                .map { repo ->
+                    DetailRepoState(false, repo)
                 }
-                .mergeWith {
-
+                .onErrorReturn {error ->
+                    detailState.value?.let {
+                        DetailRepoState(false, it.repo, error)
+                    } ?: DetailRepoState(false, error = error)
                 }
                 .subscribe {
-                    listState.value = it
+                    detailState.value = it
                 }
     }
 
-    fun selectRepo(repo: Repo) {
-        repo.name?.let { repoName ->
-            detailState.value = DetailRepoState(false, repo)
-            dataRepository.fetchSavedUsers(repo.id)
-                    .mergeWith(dataRepository.fetchUsers(repoName))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .map {
-                        DetailRepoState(false, repo, it, null)
-                    }
-                    .onErrorReturn {
-                        DetailRepoState(false, error = it)
-                    }
-                    .subscribe {
-                        detailState.value = it
-                    }
-        }
+    override fun onCleared() {
+        super.onCleared()
+        listRepoSubscription?.dispose()
+        selectedRepoSubscription?.dispose()
     }
 }

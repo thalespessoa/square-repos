@@ -15,6 +15,7 @@ import com.square.repos.app.ViewModelFactory
 import com.square.repos.model.Repo
 import com.square.repos.viewmodel.ReposViewModel
 import kotlinx.android.synthetic.main.fragment_list_repo.*
+import kotlinx.android.synthetic.main.view_warning.view.*
 
 class RepoListFragment : Fragment(), ReposAdapter.OnSelectRepo {
 
@@ -39,6 +40,7 @@ class RepoListFragment : Fragment(), ReposAdapter.OnSelectRepo {
                     .apply {
                         setLifecycleOwner(this@RepoListFragment)
                         viewModel = reposViewModel
+                        warning.title.text = reposViewModel?.detailState?.value?.error?.message
                     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

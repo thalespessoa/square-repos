@@ -8,14 +8,33 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="Text" parent="@android:style/TextAppearance">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+
+    <style name="TextLight" parent="Text">
+        <item name="android:textColor">@color/colorBaseLight</item>
+    </style>
+
     <style name="TextHeader" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textSize"> 21sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextList" parent="@android:style/TextAppearance">
+    <style name="ListText" parent="Text">
         <item name="android:textColor">@color/colorBaseDark</item>
         <item name="android:textSize">10sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ListTitle" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorBaseDark</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>

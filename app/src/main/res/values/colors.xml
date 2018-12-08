@@ -8,4 +8,6 @@
     <color name="colorBase">#D9D9D9</color>
     <color name="colorBaseMid">#919191</color>
     <color name="colorBaseDark">#4d4c4c</color>
+
+    <color name="colorWarning">#ed3030</color>
 </resources>

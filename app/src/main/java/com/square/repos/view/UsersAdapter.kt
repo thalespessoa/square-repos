@@ -6,20 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import com.square.repos.R
 import com.square.repos.model.User
-import kotlinx.android.synthetic.main.list_item.view.*
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.item_user.view.*
 
 class UsersAdapter : RecyclerView.Adapter<UsersAdapter.Holder>(), BindableAdapter<User> {
 
     private var items = emptyList<User>()
 
     override fun setData(items: List<User>) {
-        this.items = items
-        notifyDataSetChanged()
+        if(this.items != items) {
+            this.items = items
+            notifyDataSetChanged()
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val inflater = LayoutInflater.from(parent.context)
-        return Holder(inflater.inflate(R.layout.list_item, parent, false))
+        return Holder(inflater.inflate(R.layout.item_user, parent, false))
     }
 
     override fun getItemCount() = items.size
@@ -36,6 +39,7 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.Holder>(), BindableAdapte
 
         fun bind(user: User) {
             itemView.title.text = user.login
+            Picasso.with(itemView.context).load(user.avatar_url).into(itemView.image)
         }
     }
 }
