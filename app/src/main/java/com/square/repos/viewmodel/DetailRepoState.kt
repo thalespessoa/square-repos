@@ -3,7 +3,7 @@ package com.square.repos.viewmodel
 import android.view.View
 import com.square.repos.R
 import com.square.repos.model.Repo
-import com.square.repos.model.User
+import retrofit2.HttpException
 
 data class DetailRepoState(val loading: Boolean = false,
                            val repo: Repo? = null,

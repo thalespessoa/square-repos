@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import com.square.repos.R
 import com.square.repos.RepoDetailBinding
 import com.square.repos.app.ViewModelFactory
@@ -17,9 +18,9 @@ import kotlinx.android.synthetic.main.fragment_detail_repo.*
 
 class RepoDetailFragment : Fragment() {
 
+    private val warning: TextView by lazy { tv_warning }
     private val saveButton: ImageButton by lazy { bt_save }
     private val recyclerView: RecyclerView by lazy { recycler_view }
-    private val usersAdapter: UsersAdapter by lazy { UsersAdapter() }
     private val reposViewModel: ReposViewModel? by lazy {
         activity?.let {
             ViewModelProviders.of(it, ViewModelFactory())
@@ -43,10 +44,22 @@ class RepoDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView.adapter = usersAdapter
-        saveButton.setOnClickListener {
-            reposViewModel?.saveRepo()
-        }
+        recyclerView.adapter = UsersAdapter()
+        saveButton.setOnClickListener(onClickSave)
+        warning.setOnClickListener(onClickRefresh)
     }
 
+    //----------------------------------------------------------------------------------------------
+    // Actions
+    //----------------------------------------------------------------------------------------------
+
+    private val onClickSave = View.OnClickListener {
+        reposViewModel?.saveRepo()
+    }
+
+    private val onClickRefresh = View.OnClickListener {
+        reposViewModel?.detailState?.value?.repo?.let {
+            reposViewModel?.selectRepo(it)
+        }
+    }
 }

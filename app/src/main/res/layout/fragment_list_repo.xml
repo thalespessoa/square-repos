@@ -17,7 +17,7 @@
         android:background="@color/colorBaseLight">
 
         <TextView
-            android:id="@+id/warning"
+            android:id="@+id/tv_warning"
             style="@style/TextWarning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/warning"
+            android:layout_below="@id/tv_warning"
             android:visibility="@{viewModel.listState.listRepoVisibility}"
             app:data="@{viewModel.listState.repos}"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
@@ -39,15 +39,6 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:visibility="@{viewModel.listState.loadingVisibility}" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_margin="50dp"
-            android:text="@{viewModel.listState.error.message}"
-            android:visibility="@{viewModel.listState.listErrorVisibility}"
-            tools:text="Alert message" />
 
     </RelativeLayout>
 </layout>

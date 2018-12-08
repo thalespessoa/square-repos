@@ -16,13 +16,20 @@
         android:animateLayoutChanges="true"
         android:background="@color/colorBaseLight"
         android:clipToPadding="false"
-        android:padding="20dp">
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp">
 
         <TextView
             android:id="@+id/tv_title"
             style="@style/TextHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/bt_save"
+            android:layout_alignBottom="@+id/bt_save"
+            android:layout_toLeftOf="@id/bt_save"
+            android:gravity="center_vertical"
+            android:layout_alignStart="@+id/recycler_view"
             android:text="@{viewModel.detailState.repo.name}"
             tools:text="Title" />
 
@@ -31,8 +38,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="-10dp"
-            android:layout_marginTop="-10dp"
             android:background="@drawable/base_square_selector"
             android:padding="10dp"
             app:imageResource="@{viewModel.detailState.favImage}"
@@ -40,7 +45,7 @@
             tools:text="Title" />
 
         <TextView
-            android:id="@+id/warning"
+            android:id="@+id/tv_warning"
             style="@style/TextWarning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -53,8 +58,10 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/warning"
+            android:layout_below="@id/tv_warning"
             android:layout_marginTop="20dp"
+            android:paddingBottom="20dp"
+            android:clipToPadding="false"
             app:data="@{viewModel.detailState.users}"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 

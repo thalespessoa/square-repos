@@ -8,25 +8,21 @@
     android:orientation="horizontal"
     tools:context=".view.ReposActivity">
 
-    <fragment
+    <FrameLayout
         android:id="@+id/fragment_list"
-        class="com.square.repos.view.RepoListFragment"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight=".3"
-        tools:layout="@layout/fragment_list_repo" />
+        android:layout_weight="6"/>
 
     <View
         android:layout_width="1dp"
         android:layout_height="match_parent"
         android:background="@color/colorBase"/>
 
-    <fragment
-        android:id="@+id/fragment_detail"
-        class="com.square.repos.view.RepoDetailFragment"
-        android:layout_width="0dp"
+    <FrameLayout
+        android:id="@+id/fragment_details"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight=".7"
-        tools:layout="@layout/fragment_list_repo" />
+        android:layout_weight="4"/>
 
 </LinearLayout>

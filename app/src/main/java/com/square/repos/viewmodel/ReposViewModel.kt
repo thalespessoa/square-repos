@@ -7,6 +7,8 @@ import com.square.repos.data.DataRepository
 import com.square.repos.model.Repo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import retrofit2.HttpException
+import java.io.IOException
 import javax.inject.Inject
 
 class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
@@ -36,11 +38,29 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
                 .onErrorReturn { error ->
                     ListRepoState(false, listState.value?.repos ?: listOf(), error)
                 }
-                .subscribe ({
+                .subscribe({
                     listState.value = it
                 }, { error ->
                     print("subscribe error: ${error}")
                     ListRepoState(false, listState.value?.repos ?: listOf(), error)
+                })
+    }
+
+    fun selectRepo(repoSelected: Repo) {
+        detailState.value = DetailRepoState(true, repoSelected)
+        selectedRepoSubscription?.dispose()
+        selectedRepoSubscription = dataRepository.fetchRepoDetails(repoSelected)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { repo ->
+                    DetailRepoState(false, repo)
+                }
+                .onErrorReturn { error ->
+                    DetailRepoState(false, detailState.value?.repo, error)
+                }
+                .subscribe({
+                    detailState.value = it
+                }, { error ->
+                    DetailRepoState(false, detailState.value?.repo, error)
                 })
     }
 
@@ -62,28 +82,6 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
                         }
             }
         }
-    }
-
-    fun selectRepo(repoSelected: Repo) {
-        detailState.value = DetailRepoState(true, repoSelected)
-        selectedRepoSubscription?.dispose()
-        selectedRepoSubscription = dataRepository.fetchRepoDetails(repoSelected)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { repo ->
-                    DetailRepoState(false, repo)
-                }
-                .onErrorReturn { error ->
-                    detailState.value?.let {
-                        DetailRepoState(false, it.repo, error)
-                    } ?: DetailRepoState(false, error = error)
-                }
-                .subscribe ({
-                    detailState.value = it
-                }, { error ->
-                    listState.value?.let {
-                        ListRepoState(false, it.repos, error)
-                    } ?: ListRepoState(false, error = error)
-                })
     }
 
     override fun onCleared() {

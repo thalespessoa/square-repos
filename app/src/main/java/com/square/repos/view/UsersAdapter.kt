@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.square.repos.R
 import com.square.repos.model.User
+import com.square.repos.view.bind.BindableAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_user.view.*
 

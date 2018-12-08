@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.square.repos.R
 import com.square.repos.model.Repo
+import com.square.repos.view.bind.BindableAdapter
 import kotlinx.android.synthetic.main.item_repo.view.*
 
 class ReposAdapter(private val onSelectRepo: OnSelectRepo) : RecyclerView.Adapter<ReposAdapter.Holder>(), BindableAdapter<Repo> {

@@ -1,4 +1,4 @@
-package com.square.repos.view
+package com.square.repos.view.bind
 
 import android.databinding.BindingAdapter
 import android.support.v7.widget.RecyclerView

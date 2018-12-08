@@ -10,7 +10,7 @@
 
     <style name="TextWarning" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorBaseLight</item>
-        <item name="android:background">@color/colorWarning</item>
+        <item name="android:background">@drawable/warning_square_selector</item>
         <item name="android:drawableLeft">@drawable/baseline_refresh_24px</item>
         <item name="android:padding">10dp</item>
         <item name="android:drawablePadding">10dp</item>
@@ -18,8 +18,10 @@
 
     <style name="TextHeader" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textSize"> 21sp</item>
+        <item name="android:textSize"> 25sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="ListText" parent="@android:style/TextAppearance">
