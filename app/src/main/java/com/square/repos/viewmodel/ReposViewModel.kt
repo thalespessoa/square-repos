@@ -30,12 +30,18 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
     /**
      * View state for repository list screen
      */
-    val listState by lazy { MutableLiveData<ListRepoState>().apply { value = ListRepoState(false) } }
+    val listState by lazy {
+        MutableLiveData<ListRepoState>()
+                .apply { value = ListRepoState(false) }
+    }
 
     /**
      * View state for repository detail screen
      */
-    val detailState by lazy { MutableLiveData<DetailRepoState>().apply { value = DetailRepoState(false) } }
+    val detailState by lazy {
+        MutableLiveData<DetailRepoState>()
+                .apply { value = DetailRepoState(false) }
+    }
 
 
     private var selectedRepoSubscription: Disposable? = null
@@ -54,7 +60,7 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
         listRepoSubscription = dataRepository.fetchRepos()
                 .observeOn(AndroidSchedulers.mainThread())
                 .map {
-                    ListRepoState(false, it)
+                    ListRepoState(it.isEmpty(), it)
                 }
                 .startWith(ListRepoState(true))
                 .onErrorReturn { error ->
@@ -71,18 +77,22 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
      * Select a repository and load it stargazers
      */
     fun selectRepo(repoSelected: Repo) {
+        var loading = true
         selectedRepoSubscription?.dispose()
         selectedRepoSubscription = dataRepository.fetchRepoDetails(repoSelected)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { repo ->
-                    DetailRepoState(false, repo)
+                    DetailRepoState(true, repo)
                 }
                 .startWith(DetailRepoState(true, repoSelected))
+                .doOnTerminate {
+                    loading = false
+                }
                 .onErrorReturn { error ->
                     DetailRepoState(false, detailState.value?.repo, error)
                 }
                 .subscribe({
-                    detailState.value = it
+                    detailState.value = DetailRepoState(loading, it.repo, it.error)
                 }, { error ->
                     DetailRepoState(false, detailState.value?.repo, error)
                 })

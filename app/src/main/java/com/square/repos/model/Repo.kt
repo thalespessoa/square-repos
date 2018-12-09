@@ -12,7 +12,7 @@ data class Repo(
         val stargazers_count: String? = null) {
 
         @Ignore var isSaved:Boolean = false
-        @Ignore var users:List<User> = arrayListOf()
+        @Ignore var users:List<User> = listOf()
 
         override fun equals(other: Any?): Boolean = if (other is Repo) other.id == id
         else super.equals(other)
