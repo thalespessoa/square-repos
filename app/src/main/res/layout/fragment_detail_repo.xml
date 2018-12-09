@@ -13,7 +13,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
         android:background="@color/colorBaseLight"
         android:clipToPadding="false"
         android:paddingRight="20dp"

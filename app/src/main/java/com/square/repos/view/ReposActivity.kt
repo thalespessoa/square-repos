@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentTransaction
 import android.support.v4.app.ListFragment
 import android.support.v7.app.AppCompatActivity
 import android.util.AttributeSet
@@ -68,6 +69,7 @@ class ReposActivity : AppCompatActivity(),
                     .beginTransaction()
                     .add(R.id.fragment_list, RepoDetailFragment(), TAG_DETAIL)
                     .addToBackStack(viewState.repo.name)
+                    .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
                     .commitAllowingStateLoss()
         }
     }
