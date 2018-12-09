@@ -28,15 +28,15 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
                     .observeOn(io())
                     .map { users -> // Update stargazers in local database
                         users.map { it.repoId = repo.id }
-                        localDatabase.userDao().insertList(users)
+                        localDatabase.insertUserList(users)
                         repo
                     }
                     .mergeWith(Flowables.combineLatest(
-                            localDatabase.repoDao().getRepoById(repo.id),
-                            localDatabase.userDao().fetchUsersRepo(repo.id))
+                            localDatabase.getRepoById(repo.id),
+                            localDatabase.fetchUsersRepo(repo.id))
 
                     { localRepo, users -> // Check is repo is favorite
-                        localRepo.isSaved = localDatabase.favoriteDao().getFavorite(repoId = localRepo.id) != null
+                        localRepo.isSaved = localDatabase.getFavorite(repoId = localRepo.id) != null
                         localRepo.users = users // Add stargazers in repo
                         localRepo
                     })
@@ -50,12 +50,12 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
                     .observeOn(io())
                     .doOnNext { repos ->
                         repos?.let {
-                            localDatabase.repoDao().insertList(repos) // Update repos local database
+                            localDatabase.insertRepoList(repos) // Update repos local database
                         }
                     }
-                    .mergeWith(localDatabase.repoDao().loadAll()) // Fetch repos from local database
+                    .mergeWith(localDatabase.loadRepoList()) // Fetch repos from local database
                     .doOnNext { repos ->
-                        localDatabase.favoriteDao().getFavorites().map { repoId ->
+                        localDatabase.getFavorites().map { repoId ->
                             repos.find { it.id == repoId }?.isSaved = true
                         }
                     }
@@ -65,11 +65,7 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
      * @param Repo
      */
     fun saveRepo(repo: Repo): Completable = Completable.fromAction {
-        localDatabase.runInTransaction {
-            localDatabase.favoriteDao().insertFavorite(Favorite(repo.id))
-            localDatabase.repoDao().insert(repo)
-            repo.isSaved = true
-        }
+        localDatabase.insertFavorite(repo)
     }.subscribeOn(io())
 
     /**
@@ -77,10 +73,6 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
      * @param Repo
      */
     fun removeRepo(repo: Repo): Completable = Completable.fromAction {
-        localDatabase.runInTransaction {
-            localDatabase.favoriteDao().deleteFavorite(Favorite(repo.id))
-            localDatabase.repoDao().insert(repo)
-            repo.isSaved = false
-        }
+        localDatabase.deleteFavorite(repo)
     }.subscribeOn(io())
 }

@@ -17,8 +17,7 @@ class AppModule(private val application: ApplicationController) {
 
     @Provides
     @Singleton
-    fun getLocalDatabase(): LocalDatabase =
-            Room.databaseBuilder(application, LocalDatabase::class.java, "square_db").build()
+    fun getLocalDatabase(): LocalDatabase = LocalDatabase(application)
 
     @Provides
     @Singleton

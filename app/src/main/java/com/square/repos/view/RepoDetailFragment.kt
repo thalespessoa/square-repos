@@ -66,8 +66,8 @@ class RepoDetailFragment : Fragment() {
     }
 
     private val onClickRefresh = View.OnClickListener {
-        reposViewModel?.detailState?.value?.repo?.let {
-            reposViewModel?.selectRepo(it)
+        reposViewModel?.detailState?.value?.repo?.let { repo ->
+            reposViewModel?.selectRepo(repo)
         }
     }
 }

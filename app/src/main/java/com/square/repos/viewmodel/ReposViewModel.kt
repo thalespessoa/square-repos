@@ -37,6 +37,7 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
      */
     val detailState by lazy { MutableLiveData<DetailRepoState>().apply { value = DetailRepoState(false) } }
 
+
     private var selectedRepoSubscription: Disposable? = null
     private var listRepoSubscription: Disposable? = null
 
@@ -62,7 +63,6 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
                 .subscribe({
                     listState.value = it
                 }, { error ->
-                    print("subscribe error: ${error}")
                     ListRepoState(false, listState.value?.repos ?: listOf(), error)
                 })
     }
@@ -77,7 +77,7 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
                 .map { repo ->
                     DetailRepoState(false, repo)
                 }
-                .startWith(DetailRepoState(true))
+                .startWith(DetailRepoState(true, repoSelected))
                 .onErrorReturn { error ->
                     DetailRepoState(false, detailState.value?.repo, error)
                 }
