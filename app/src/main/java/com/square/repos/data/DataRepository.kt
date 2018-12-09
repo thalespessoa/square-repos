@@ -13,9 +13,6 @@ import io.reactivex.schedulers.Schedulers.io
 
 class DataRepository(private val networkApi: NetworkApi, private val localDatabase: LocalDatabase) {
 
-//    fun fetchRepoDetails(repo: Repo): Flowable<Repo> = Flowable.just(Repo(2, "Repo 2").apply {
-//        listOf(User(1, 1, "User 1"))
-//    })
     fun fetchRepoDetails(repo: Repo): Flowable<Repo> =
             networkApi.fetchStargazers(repo.name!!).subscribeOn(io())
                     .observeOn(io())
@@ -34,7 +31,6 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
                         localRepo
                     })
 
-//    fun fetchRepos(): Flowable<List<Repo>> = Flowable.just(listOf(Repo(1, "Repo1"), Repo(2, "Repo2")))
     fun fetchRepos(): Flowable<List<Repo>> =
             networkApi.fetchList().subscribeOn(io())
                     .observeOn(io())
@@ -54,6 +50,7 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
         localDatabase.runInTransaction {
             localDatabase.favoriteDao().insertFavorite(Favorite(repo.id))
             localDatabase.repoDao().insert(repo)
+            repo.isSaved = true
         }
     }.subscribeOn(io())
 
@@ -61,6 +58,7 @@ class DataRepository(private val networkApi: NetworkApi, private val localDataba
         localDatabase.runInTransaction {
             localDatabase.favoriteDao().deleteFavorite(Favorite(repo.id))
             localDatabase.repoDao().insert(repo)
+            repo.isSaved = false
         }
     }.subscribeOn(io())
 }

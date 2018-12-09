@@ -29,12 +29,12 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
     }
 
     fun listRepos() {
-        listState.value = ListRepoState(true)
         listRepoSubscription = dataRepository.fetchRepos()
                 .observeOn(AndroidSchedulers.mainThread())
                 .map {
                     ListRepoState(false, it)
                 }
+                .startWith(ListRepoState(true))
                 .onErrorReturn { error ->
                     ListRepoState(false, listState.value?.repos ?: listOf(), error)
                 }
@@ -47,13 +47,13 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
     }
 
     fun selectRepo(repoSelected: Repo) {
-        detailState.value = DetailRepoState(true, repoSelected)
         selectedRepoSubscription?.dispose()
         selectedRepoSubscription = dataRepository.fetchRepoDetails(repoSelected)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { repo ->
                     DetailRepoState(false, repo)
                 }
+                .startWith(DetailRepoState(true))
                 .onErrorReturn { error ->
                     DetailRepoState(false, detailState.value?.repo, error)
                 }
@@ -65,20 +65,18 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
     }
 
     fun saveRepo() {
-        detailState.value?.let { detailState ->
-            detailState.repo?.let { repo ->
+        detailState.value?.let { state ->
+            state.repo?.let { repo ->
                 if (repo.isSaved) {
                     dataRepository.removeRepo(repo)
                 } else {
                     dataRepository.saveRepo(repo)
                 }
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe({
-                            // success
-                            println("Save repo")
+                            detailState.value = state.copy().apply { repo.isSaved = true }
                         }) {
                             it.printStackTrace()
-                            println("Error Save repo: $it")
-                            // error
                         }
             }
         }

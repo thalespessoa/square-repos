@@ -3,7 +3,6 @@ package com.square.repos.viewmodel
 import android.view.View
 import com.square.repos.R
 import com.square.repos.model.Repo
-import retrofit2.HttpException
 
 data class DetailRepoState(val loading: Boolean = false,
                            val repo: Repo? = null,
@@ -14,8 +13,9 @@ data class DetailRepoState(val loading: Boolean = false,
 
     val users = repo?.users ?: listOf()
 
-    val favImage = if (repo?.isSaved == true)
-        R.drawable.baseline_favorite_24px
-    else
-        R.drawable.baseline_favorite_border_24px
+    val favImage = when {
+        repo?.isSaved == true -> R.drawable.baseline_favorite_24px
+        repo?.isSaved == false -> R.drawable.baseline_favorite_border_24px
+        else -> 0
+    }
 }
