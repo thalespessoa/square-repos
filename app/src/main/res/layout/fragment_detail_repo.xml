@@ -40,7 +40,17 @@
             android:layout_toLeftOf="@id/bt_save"
             android:text="@{viewModel.detailState.repo.stargazers_count.concat(` `+@string/stargazers)}"
             android:visibility="@{viewModel.detailState.subtitleVisibility}"
-            tools:text="5 Stargazers"/>
+            tools:text="5 Stargazers" />
+
+        <TextView
+            android:id="@+id/tv_warning"
+            style="@style/TextWarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_title"
+            android:layout_marginTop="5dp"
+            android:text="@string/friendly_error"
+            android:visibility="@{viewModel.detailState.errorVisibility}" />
 
         <ImageButton
             android:id="@+id/bt_save"
@@ -52,16 +62,6 @@
             app:imageResource="@{viewModel.detailState.favImage}"
             tools:src="@drawable/baseline_favorite_border_24px"
             tools:text="Title" />
-
-        <TextView
-            android:id="@+id/tv_warning"
-            style="@style/TextWarning"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/tv_title"
-            android:layout_marginTop="5dp"
-            android:text="@{viewModel.detailState.errorMessage}"
-            android:visibility="@{viewModel.detailState.errorVisibility}" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

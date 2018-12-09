@@ -7,6 +7,7 @@ import retrofit2.HttpException
 import org.json.JSONObject
 
 
+
 /**
  * View state for the detail screen
  * It is instantiated by the ViewModel and listened by the views
@@ -18,10 +19,7 @@ import org.json.JSONObject
 data class DetailRepoState(val loading: Boolean = false,
                            val repo: Repo? = null,
                            val error: Throwable? = null) {
-    val loadingVisibility = if (loading && repo?.users?.isEmpty() != false && error == null)
-        View.VISIBLE
-    else
-        View.INVISIBLE
+    val loadingVisibility = if (loading) View.VISIBLE else View.INVISIBLE
     val errorVisibility = if (!loading && error != null) View.VISIBLE else View.GONE
     val subtitleVisibility = if (!loading && error != null) View.INVISIBLE else View.VISIBLE
 
@@ -33,7 +31,7 @@ data class DetailRepoState(val loading: Boolean = false,
         else -> 0
     }
 
-    val errorMessage = if (error is HttpException) {
+    val errorMessage = if(error is HttpException) {
         try {
             val jsonObject = JSONObject(error.response().errorBody()?.string())
             jsonObject.getString("message")

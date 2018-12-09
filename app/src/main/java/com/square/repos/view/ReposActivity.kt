@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import com.square.repos.R
 import com.square.repos.app.ViewModelFactory
 import com.square.repos.viewmodel.DetailRepoState
@@ -78,6 +79,9 @@ class ReposActivity : AppCompatActivity(),
                     .addToBackStack(viewState.repo.name)
                     .setTransition( FragmentTransaction.TRANSIT_FRAGMENT_OPEN )
                     .commitAllowingStateLoss()
+        }
+        viewState?.error?.let {
+            Toast.makeText(this, viewState.errorMessage, Toast.LENGTH_SHORT).show()
         }
     }
 

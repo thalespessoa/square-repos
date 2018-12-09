@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
             android:layout_margin="10dp"
-            android:text="@{viewModel.listState.error.message}"
+            android:text="@string/friendly_error"
             android:visibility="@{viewModel.listState.listErrorVisibility}" />
 
         <android.support.v7.widget.RecyclerView

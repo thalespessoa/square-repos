@@ -7,8 +7,6 @@ import com.square.repos.data.DataRepository
 import com.square.repos.model.Repo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import retrofit2.HttpException
-import java.io.IOException
 import javax.inject.Inject
 
 /**
@@ -77,22 +75,18 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
      * Select a repository and load it stargazers
      */
     fun selectRepo(repoSelected: Repo) {
-        var loading = true
         selectedRepoSubscription?.dispose()
         selectedRepoSubscription = dataRepository.fetchRepoDetails(repoSelected)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { repo ->
-                    DetailRepoState(true, repo)
+                    DetailRepoState(false, repo)
                 }
                 .startWith(DetailRepoState(true, repoSelected))
-                .doOnTerminate {
-                    loading = false
-                }
                 .onErrorReturn { error ->
                     DetailRepoState(false, detailState.value?.repo, error)
                 }
                 .subscribe({
-                    detailState.value = DetailRepoState(loading, it.repo, it.error)
+                    detailState.value = it
                 }, { error ->
                     DetailRepoState(false, detailState.value?.repo, error)
                 })
