@@ -16,6 +16,14 @@ import com.square.repos.app.ViewModelFactory
 import com.square.repos.viewmodel.ReposViewModel
 import kotlinx.android.synthetic.main.fragment_detail_repo.*
 
+/**
+ * Repository detail screen
+ *
+ * @see ReposViewModel
+ * @see DetailRepoState
+ *
+ * Created by thalespessoa on 9/12/18.
+ */
 class RepoDetailFragment : Fragment() {
 
     private val warning: TextView by lazy { tv_warning }

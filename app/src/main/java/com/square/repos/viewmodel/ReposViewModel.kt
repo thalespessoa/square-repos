@@ -11,12 +11,30 @@ import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible to the communication between data providers and views.
+ * It communicate with 'DataRepository' class to read and write data
+ * and provide view states objects(ListRepoState and DetailRepoState) for the views
+ *
+ * @see DataRepository
+ * @see ListRepoState
+ * @see DetailRepoState
+ *
+ * Created by thalespessoa on 9/12/18.
+ */
 class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
 
     @Inject
     lateinit var dataRepository: DataRepository
 
+    /**
+     * View state for repository list screen
+     */
     val listState by lazy { MutableLiveData<ListRepoState>().apply { value = ListRepoState(false) } }
+
+    /**
+     * View state for repository detail screen
+     */
     val detailState by lazy { MutableLiveData<DetailRepoState>().apply { value = DetailRepoState(false) } }
 
     private var selectedRepoSubscription: Disposable? = null
@@ -28,6 +46,9 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
         listRepos()
     }
 
+    /**
+     * Load list of repositories
+     */
     fun listRepos() {
         listRepoSubscription = dataRepository.fetchRepos()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -46,6 +67,9 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
                 })
     }
 
+    /**
+     * Select a repository and load it stargazers
+     */
     fun selectRepo(repoSelected: Repo) {
         selectedRepoSubscription?.dispose()
         selectedRepoSubscription = dataRepository.fetchRepoDetails(repoSelected)
@@ -64,6 +88,9 @@ class ReposViewModel : ViewModel(), ApplicationComponent.Injectable {
                 })
     }
 
+    /**
+     * Save selected repository as favorite
+     */
     fun saveRepo() {
         detailState.value?.let { state ->
             state.repo?.let { repo ->

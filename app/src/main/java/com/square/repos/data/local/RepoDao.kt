@@ -21,7 +21,7 @@ interface RepoDao {
     fun loadAll(): Flowable<List<Repo>>
 
     @Query("SELECT * FROM repo_entity WHERE id = :id LIMIT 1")
-    fun select(id:Int): Flowable<Repo>
+    fun getRepoById(id:Int): Flowable<Repo>
 
     @Update()
     fun update(repos: List<Repo>)

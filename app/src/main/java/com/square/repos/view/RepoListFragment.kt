@@ -17,6 +17,14 @@ import com.square.repos.model.Repo
 import com.square.repos.viewmodel.ReposViewModel
 import kotlinx.android.synthetic.main.fragment_list_repo.*
 
+/**
+ * Repository list screen
+ *
+ * @see ReposViewModel
+ * @see ListRepoState
+ *
+ * Created by thalespessoa on 9/12/18.
+ */
 class RepoListFragment : Fragment() {
 
     private val warning: TextView by lazy { tv_warning }

@@ -19,6 +19,7 @@ import javax.net.ssl.X509TrustManager
  * Class responsible for the communication with server
  * All remote data access comes from here.
  *
+ * Created by thalespessoa on 9/12/18.
  */
 
 class NetworkApi {
@@ -32,7 +33,9 @@ class NetworkApi {
     private val retrofit: Retrofit
     private val reviewsApi: ReviewsApi
 
+    //----------------------------------------------------------------------------------------------
     // API
+    //----------------------------------------------------------------------------------------------
 
     interface ReviewsApi {
         @GET(LIST_URL)
@@ -42,12 +45,16 @@ class NetworkApi {
         fun fetchStargazers(@Path("repo_name") repoName:String): Flowable<List<User>>
     }
 
-    // PUBLIC
+    //----------------------------------------------------------------------------------------------
+    // Public
+    //----------------------------------------------------------------------------------------------
 
     fun fetchList(): Flowable<List<Repo>> = reviewsApi.fetchList()
     fun fetchStargazers(repoName:String): Flowable<List<User>> = reviewsApi.fetchStargazers(repoName)
 
-    // INIT
+    //----------------------------------------------------------------------------------------------
+    // Init
+    //----------------------------------------------------------------------------------------------
 
     init {
         val clientBuilder = OkHttpClient.Builder()

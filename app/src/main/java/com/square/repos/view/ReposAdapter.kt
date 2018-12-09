@@ -9,6 +9,11 @@ import com.square.repos.model.Repo
 import com.square.repos.view.bind.BindableAdapter
 import kotlinx.android.synthetic.main.item_repo.view.*
 
+/**
+ * Adapter for repositories list
+ *
+ * Created by thalespessoa on 9/12/18.
+ */
 class ReposAdapter(private val onSelectRepo: OnSelectRepo) : RecyclerView.Adapter<ReposAdapter.Holder>(), BindableAdapter<Repo> {
 
     private var items = emptyList<Repo>()

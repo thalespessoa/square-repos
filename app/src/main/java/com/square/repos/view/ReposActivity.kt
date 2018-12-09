@@ -17,6 +17,13 @@ import com.square.repos.app.ViewModelFactory
 import com.square.repos.viewmodel.DetailRepoState
 import com.square.repos.viewmodel.ReposViewModel
 
+/**
+ * Main class responsible to manage the navigation of the screens (list and details).
+ * In case of tablets and phone landscape, both screens are showed at the same time
+ * In case of phones portrait, screens are showed once a time
+ *
+ * Created by thalespessoa on 9/12/18.
+ */
 class ReposActivity : AppCompatActivity(),
         Observer<DetailRepoState>,
         FragmentManager.OnBackStackChangedListener {

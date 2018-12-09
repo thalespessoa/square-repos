@@ -4,6 +4,14 @@ import android.view.View
 import com.square.repos.R
 import com.square.repos.model.Repo
 
+/**
+ * View state for the detail screen
+ * It is instantiated by the ViewModel and listened by the views
+ *
+ * @see ReposViewModel
+ *
+ * Created by thalespessoa on 9/12/18.
+ */
 data class DetailRepoState(val loading: Boolean = false,
                            val repo: Repo? = null,
                            val error: Throwable? = null) {

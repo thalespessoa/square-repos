@@ -15,5 +15,5 @@ interface UserDao {
     fun delete(user: User)
 
     @Query("SELECT * FROM user_entity WHERE repoId=:repoId")
-    fun selectUsersRepo(repoId:Int):Flowable<List<User>>
+    fun fetchUsersRepo(repoId:Int):Flowable<List<User>>
 }

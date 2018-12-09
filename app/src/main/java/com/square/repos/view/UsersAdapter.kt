@@ -10,6 +10,11 @@ import com.square.repos.view.bind.BindableAdapter
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_user.view.*
 
+/**
+ * Adapter for stargazers list
+ *
+ * Created by thalespessoa on 9/12/18.
+ */
 class UsersAdapter : RecyclerView.Adapter<UsersAdapter.Holder>(), BindableAdapter<User> {
 
     private var items = emptyList<User>()
